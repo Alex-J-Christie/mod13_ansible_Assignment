@@ -203,7 +203,7 @@
           "listen": "test",
           "script": {
             "exec": [
-              "pm.test(\"GET BY ID test - deleted id should not be found!): \", function() {",
+              "pm.test(\"GET BY ID test): \", function() {",
               "    var jsonData = pm.response.json();",
               "    pm.expect(jsonData.customerAcct).to.equal(\"908371\");",
               "})"
@@ -294,15 +294,6 @@
       "request": {
         "method": "DELETE",
         "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"orderStatus\": \"SHIPPED\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
         "url": {
           "raw": "http://localhost:3000/orders/1",
           "protocol": "http",

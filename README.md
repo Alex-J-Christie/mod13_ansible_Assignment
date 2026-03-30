@@ -19,11 +19,11 @@
 
 | ENDPOINT | DESCRIPTION | Returns |
 |----------|-------------|---------|
-|POST /orders| Add an order to the database, requires valid JSON payload with all fields barring the ID field | Returns the valid record, additionally with orderID, createdAt, and updatedAt fields|
-|GET /orders| Returns all orders within the database | returns a list of all order records|
-|GET /orders/:id| Returns the order with the matching ID, produces an error if no such order exists| returns the order record with the matching ID|
-|PATCH /orders/:id| Updates one or more fields within an existing order, submitted changes must be valid and the designated ID must have a matching record or else an error is produced| returns the updated order record|
-|DELETE /orders/:id| Deletes an order with the matching ID from the database, produces an error if no such record exists| returns the content of the successfully deleted order record|
+|POST /orders| Add an order to the database, requires valid JSON payload with all fields barring the ID field | STATUS CODE: 201, Returns the valid record, additionally with orderID, createdAt, and updatedAt fields|
+|GET /orders| Returns all orders within the database | STATUS CODE: 200, returns a list of all order records|
+|GET /orders/:id| Returns the order with the matching ID, produces an error if no such order exists| STATUS CODE: 200, returns the order record with the matching ID|
+|PATCH /orders/:id| Updates one or more fields within an existing order, submitted changes must be valid and the designated ID must have a matching record or else an error is produced| STATUS CODE: 200, returns the updated order record|
+|DELETE /orders/:id| Deletes an order with the matching ID from the database, produces an error if no such record exists| STATUS CODE: 204, returns no content if the order record was successfully deleted|
 
 ---
 ###   EXAMPLE JSON PAYLOADS AND EXPECTED RESULTS (STATUS CODES)
