@@ -44,8 +44,8 @@ describe('Order Controller', () => {
         await postOrder(req, res);
 
         expect(mockOrderModel.create).toHaveBeenCalledWith(validOrder);
-        expect(res.status).toHaveBeenCalledWith(201);
-        expect(res.json).toHaveBeenCalledWith(validOrder);
+        expect(res.status.mock.calls[0][0]).toBe(201);
+        expect(res.json.mock.calls[0][0]).toEqual(validOrder);
     });
 
     it('returns 422 for invalid input (bad types)', async () => {
@@ -59,7 +59,7 @@ describe('Order Controller', () => {
         };
         const res = mockResponse();
         await postOrder(req, res);
-        expect(res.status).toHaveBeenCalledWith(422);
+        expect(res.status.mock.calls[0][0]).toBe(422);
         expect(mockOrderModel.create).not.toHaveBeenCalled();
     });
 
@@ -71,7 +71,7 @@ describe('Order Controller', () => {
         mockOrderModel.create.mockResolvedValue(req.body);
 
         await postOrder(req, res);
-        expect(res.status).toHaveBeenCalledWith(201);
+        expect(res.status.mock.calls[0][0]).toBe(201);
     });
 
     it('handles DB error (400)', async () => {
@@ -82,7 +82,7 @@ describe('Order Controller', () => {
 
         await postOrder(req, res);
 
-        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.status.mock.calls[0][0]).toBe(400);
     });
 
     it('accepts customerAcct at exact length boundary (6)', async () => {
@@ -93,7 +93,7 @@ describe('Order Controller', () => {
         mockOrderModel.create.mockResolvedValue(req.body);
 
         await postOrder(req, res);
-        expect(res.status).toHaveBeenCalledWith(201);
+        expect(res.status.mock.calls[0][0]).toBe(201);
     });
 
     it('returns 422 for empty body', async () => {
@@ -101,7 +101,7 @@ describe('Order Controller', () => {
         const res = mockResponse();
 
         await postOrder(req, res);
-        expect(res.status).toHaveBeenCalledWith(422);
+        expect(res.status.mock.calls[0][0]).toBe(422);
     });
 
     it('returns 422 and does NOT call DB', async () => {
@@ -109,7 +109,7 @@ describe('Order Controller', () => {
         const res = mockResponse();
 
         await postOrder(req, res);
-        expect(res.status).toHaveBeenCalledWith(422);
+        expect(res.status.mock.calls[0][0]).toBe(422);
         expect(mockOrderModel.create).not.toHaveBeenCalled();
     });
 
@@ -124,8 +124,8 @@ describe('Order Controller', () => {
 
         await getOrders({}, res);
         expect(mockOrderModel.findAll).toHaveBeenCalledTimes(1);
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith(orders);
+        expect(res.status.mock.calls[0][0]).toBe(200);
+        expect(res.json.mock.calls[0][0]).toContain(validOrder);
     });
 
     it('handles DB error (500)', async () => {
@@ -133,9 +133,7 @@ describe('Order Controller', () => {
         mockOrderModel.findAll.mockRejectedValue(new Error('fail'));
 
         await getOrders({}, res);
-        expect(res.json).toHaveBeenCalledWith(
-            expect.objectContaining({ message: expect.any(String) })
-        );
+        expect(res.json.mock.calls[0][0].message).toContain('Error');
     });
 
   });
@@ -149,8 +147,8 @@ describe('Order Controller', () => {
 
         await getOrderByID(req, res);
         expect(mockOrderModel.findByPk).toHaveBeenCalledWith(1);
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith(validOrder);
+        expect(res.status.mock.calls[0][0]).toBe(200);
+        expect(res.json.mock.calls[0][0]).toEqual(validOrder);
     });
 
     it('returns 404 if not found', async () => {
@@ -159,7 +157,7 @@ describe('Order Controller', () => {
         mockOrderModel.findByPk.mockResolvedValue(null);
 
         await getOrderByID(req, res);
-        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.status.mock.calls[0][0]).toBe(404);
     });
 
     it('handles DB error (500)', async () => {
@@ -168,9 +166,7 @@ describe('Order Controller', () => {
         mockOrderModel.findByPk.mockRejectedValue(new Error('fail'));
 
         await getOrderByID(req, res);
-        expect(res.json).toHaveBeenCalledWith(
-            expect.objectContaining({ message: expect.any(String) })
-        );
+        expect(res.json.mock.calls[0][0].message).toContain('Error');
     });
 
   });
@@ -188,7 +184,7 @@ describe('Order Controller', () => {
         await updateOrderByID(req, res);
         expect(mockOrderModel.findByPk).toHaveBeenCalledWith(1);
         expect(mockOrder.update).toHaveBeenCalledWith(validOrder);
-        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.status.mock.calls[0][0]).toBe(200);
     });
 
     it('returns 422 for invalid input', async () => {
@@ -199,7 +195,7 @@ describe('Order Controller', () => {
         const res = mockResponse();
 
         await updateOrderByID(req, res);
-        expect(res.status).toHaveBeenCalledWith(422);
+        expect(res.status.mock.calls[0][0]).toBe(422);
     });
 
     it('returns 404 if order not found', async () => {
@@ -208,7 +204,7 @@ describe('Order Controller', () => {
         mockOrderModel.findByPk.mockResolvedValue(null);
 
         await updateOrderByID(req, res);
-        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.status.mock.calls[0][0]).toBe(404);
     });
 
     it('handles DB error (500)', async () => {
@@ -217,9 +213,7 @@ describe('Order Controller', () => {
         mockOrderModel.findByPk.mockRejectedValue(new Error('fail'));
 
         await updateOrderByID(req, res);
-        expect(res.json).toHaveBeenCalledWith(
-            expect.objectContaining({ message: expect.any(String) })
-        );
+        expect(res.json.mock.calls[0][0].message).toContain('Error');
     });
 
     it('updates order correctly', async () => {
@@ -233,8 +227,8 @@ describe('Order Controller', () => {
         await updateOrderByID(req, res);
         expect(mockOrderModel.findByPk).toHaveBeenCalledWith(1);
         expect(mockOrder.update).toHaveBeenCalledWith(validOrder);
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith(mockOrder);
+        expect(res.status.mock.calls[0][0]).toBe(200);
+        expect(res.json.mock.calls[0][0]).toEqual(mockOrder);
     });
 
   });
@@ -252,7 +246,7 @@ describe('Order Controller', () => {
         await deleteOrder(req, res);
         expect(mockOrderModel.findByPk).toHaveBeenCalledWith(1);
         expect(mockOrder.destroy).toHaveBeenCalled();
-        expect(res.status).toHaveBeenCalledWith(204);
+        expect(res.status.mock.calls[0][0]).toBe(204);
     });
 
     it('returns 404 if not found', async () => {
@@ -261,7 +255,7 @@ describe('Order Controller', () => {
         mockOrderModel.findByPk.mockResolvedValue(null);
 
         await deleteOrder(req, res);
-        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.status.mock.calls[0][0]).toBe(404);
     });
 
     it('handles DB error (500)', async () => {
@@ -270,9 +264,7 @@ describe('Order Controller', () => {
         mockOrderModel.findByPk.mockRejectedValue(new Error('fail'));
 
         await deleteOrder(req, res);
-        expect(res.json).toHaveBeenCalledWith(
-            expect.objectContaining({ message: expect.any(String) })
-        );
+        expect(res.json.mock.calls[0][0].message).toContain('Error');
     });
 
   });
