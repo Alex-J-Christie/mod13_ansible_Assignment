@@ -1,7 +1,7 @@
 ###   SETUP INSTRUCTIONS
 
 - Download the project directory
-- `CD` into the "mod9_api_impl" directory
+- `CD` into the "mod13_api_impl" directory
 - If the "node_modules" folder does not exist 
   - Within the project directory, run 
   
