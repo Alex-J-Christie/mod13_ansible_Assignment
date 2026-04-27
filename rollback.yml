@@ -1,6 +1,5 @@
 ---
 - hosts: all
-  become: true
   tasks:
     - name: Stop the Node.js app
       command: pm2 stop mod13_ansible_assignment
