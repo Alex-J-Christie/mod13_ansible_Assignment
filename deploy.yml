@@ -1,0 +1,113 @@
+---
+- hosts: all
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+      become: true
+
+    - name: Install Node.js, npm
+      apt:
+        name:
+          - nodejs
+          - npm
+        state: present
+      become: true
+
+    - name: Install PostgreSQL and Python dependencies
+      apt:
+        name:
+          - postgresql
+          - postgresql-contrib
+          - python3-psycopg2 # Required for Ansible postgresql modules
+          - acl # Required to allow Ansible to become the postgres user
+        state: present
+      become: true
+
+    - name: Ensure PostgreSQL service is running
+      service:
+        name: postgresql
+        state: started
+        enabled: yes
+      become: true
+
+    - name: Create database
+      postgresql_db:
+        name: my_database
+        state: present
+      become: true
+      become_user: postgres
+
+    # - name: Create database user
+    #   postgresql_user:
+    #     db: my_database
+    #     name: app_user
+    #     password: securepassword123
+    #     state: present
+    #   become_user: postgres
+
+    - name: Create database user
+      postgresql_user:
+        name: app_user
+        password: securepassword123
+        state: present
+      become: true
+      become_user: postgres
+
+    - name: Grant ALL privileges on database to app_user
+      postgresql_privs:
+        db: my_database
+        roles: app_user
+        privs: ALL
+        type: database
+        state: present
+      become: true
+      become_user: postgres
+
+    - name: Compress files locally
+      archive:
+        path: /home/alexc/Documents/School/2026_Spring/CSC_820/Week_14/
+        dest: /tmp/app.tar.gz
+        format: gz
+      delegate_to: localhost
+
+    - name: Copy archive to VM
+      copy:
+        src: /tmp/app.tar.gz
+        dest: /tmp/app.tar.gz
+
+    - name: Ensure target directory exists on VM
+      file:
+        path: /home/vboxuser/mod13_ansible_assignment
+        state: directory
+        mode: '0755'
+
+    - name: Extract files on VM
+      unarchive:
+        src: /tmp/app.tar.gz
+        dest: /home/vboxuser/mod13_ansible_assignment
+        remote_src: yes
+      become: true
+
+    # - name: Copy application files
+    #   copy:
+    #     src: /home/alexc/Documents/School/2026_Spring/CSC_820/Week_14
+    #     dest: /home/vboxuser/mod13_ansible_assignment
+
+    - name: Install app dependencies
+      npm:
+        path: /home/vboxuser/mod13_ansible_assignment/mod13/mod13_api_impl
+        state: present
+      become: true
+
+    - name: Install PM2 globally
+      npm:
+        name: pm2
+        global: yes
+        state: present
+      become: true
+
+    - name: Start the Node.js app with PM2
+      command: pm2 start app.js --name "mod13_ansible_assignment"
+      args:
+        chdir: /home/vboxuser/mod13_ansible_assignment/mod13/mod13_api_impl

@@ -1,3 +1,48 @@
+###   ANSIBLE SETUP INSTRUCTIONS
+
+####   ANSIBLE TEST ENVIRONMENT
+This is the environment I used to run the proceeding ansible setup
+
+- System Target:
+    - VM: Ubuntu 24.04.4 LTS
+    - Kernel: 6.8.0-110-generic
+    - Memory: 2 GB
+
+####   ANSIBLE PreRequisites
+
+Your target server needs the following packages installed:
+
+- Curl
+- SSH
+- Ansible (2.20.5)
+
+####   Running the ANSIBLE Commands
+
+<b> To Initialize the Application, Run the Following Command: </b>
+
+    ansible-playbook -i "<Target IP Address>," -u <Target UserName> --private-key ~/.ssh/id_ed25519 deploy.yml --ask-become-pass
+You will be prompted for the target user's password - type it in and press enter
+
+<b> To Reset to a Base State (Shutdown and Delete the Application), Run the Following Command: </b>
+
+    ansible-playbook -i "<Target IP Address>," -u <Target UserName> --private-key ~/.ssh/id_ed25519 rollback.yml --ask-become-pass
+You will be prompted for the target user's password - type it in and press enter
+
+####   Running the Verification Script
+
+- Run the Ansible deploy script
+- `CD` into the "mod13_api_impl" directory
+- run the following command:
+
+        ./test.sh <target ip>
+    <b>NOTE:</b> if the test file does not have the correct permissions, run:
+    
+        sudo chmod +x test.sh
+
+####   Known Issues
+
+if the password submitted during the deployment is incorrect, the deployment will not reject the attempt at the outset. You will only know you have submitted an incorrect password at the "Extract files on VM" task where it will produce an error.
+
 ###   SETUP INSTRUCTIONS
 
 - Download the project directory
