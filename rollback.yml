@@ -13,12 +13,14 @@
       file:
         path: /home/vboxuser/mod13_ansible_assignment
         state: absent
+      become: true
 
     - name: Stop PostgreSQL service
       service:
         name: postgresql
         state: stopped
         enabled: no
+      become: true
 
     - name: Uninstall PostgreSQL
       apt:
@@ -27,3 +29,4 @@
           - postgresql-contrib
         state: absent
         purge: yes
+      become: true
